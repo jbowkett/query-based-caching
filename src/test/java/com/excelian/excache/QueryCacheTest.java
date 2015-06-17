@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by jbowkett on 17/06/15.
@@ -19,7 +20,7 @@ public class QueryCacheTest {
 
   private Cache<String> theCache;
   private CacheRegistry<String> theCacheRegistry;
-  private QueryCache<String> theQueryCache;
+  private Cache<String> theQueryCache;
   private Predicate<String> thePredicate;
 
   //    final Predicate<String> isEmpty = String::isEmpty;
@@ -36,22 +37,23 @@ public class QueryCacheTest {
     then_EachPredicateWillBeConsultedWithTheValue("UPDATED VALUE");
   }
 
-//  public void testWhenAQueryCacheSpecifiesAPredicateThatWillPerformSelectionItReceivesAMessageToUpdateFromItsDatastore(){
-
-//  }
-//    then_TheAssociatedCacheWillReceiveAMessageToRefreshFromStore();
-//    //why not just send it the object??:
-//    when_APredicateReturnsTrueToSelect();
-//    when_ACacheReceivesAnUpdatedValueOf();
-//    given_AQueryCacheRegistry();
-//    given_AQueryCache();
+  @Test
+  public void testWhenAQueryCacheSpecifiesAPredicateThatWillPerformSelectionItReceivesAMessageToUpdateFromItsDatastore(){
+    given_AQueryCacheRegistryThatSpecifiesPredicatesForEachCache();
+    given_AVanillaCacheOfTypeString();
+    given_APredicateForTheQueryCache();
+    given_AQueryCacheThatRegistersWithThePredicate();
+    given_ThePredicateReturnsTrueToSelect();
+    when_ACacheReceivesAnUpdatedValueOf("UPDATED VALUE");
+    then_TheQueryCacheWillReceiveAnEvictionMessageForTheValue("UPDATED VALUE");
+  }
 
   private void given_APredicateForTheQueryCache() {
     thePredicate = (Predicate<String>)mock(Predicate.class);
   }
 
   private void given_AQueryCacheThatRegistersWithThePredicate() {
-    theQueryCache = new QueryCache<>();
+    theQueryCache = mock(Cache.class);
     theCacheRegistry.registerCache(theQueryCache, thePredicate);
   }
 
@@ -71,19 +73,11 @@ public class QueryCacheTest {
     verify(thePredicate).test(theValue);
   }
 
-  private void given_AQueryCache() {
-
+  private void then_TheQueryCacheWillReceiveAnEvictionMessageForTheValue(String value) {
+    verify(theQueryCache).evict(value);
   }
 
-  private void given_AQueryCacheRegistry() {
-
-  }
-
-  private void when_APredicateReturnsTrueToSelect() {
-
-  }
-
-  private void then_TheAssociatedCacheWillReceiveAMessageToRefreshFromStore() {
-
+  private void given_ThePredicateReturnsTrueToSelect() {
+    when(thePredicate.test(anyString())).thenReturn(true);
   }
 }

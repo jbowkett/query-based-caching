@@ -6,7 +6,7 @@ import java.util.function.Predicate;
  * Created by jbowkett on 17/06/15.
  */
 public interface CacheRegistry<T extends Object> {
-  public void registerCache(QueryCache<T> queryCache, Predicate<T> predicate);
+  public void registerCache(Cache<T> queryCache, Predicate<T> predicate);
 
   void broadcast(T object);
 }

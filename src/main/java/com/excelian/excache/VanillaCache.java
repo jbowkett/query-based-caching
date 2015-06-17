@@ -15,6 +15,12 @@ public class VanillaCache<T> implements Cache<T> {
     storeItInMyCacheOrWhatever(object);
     theCacheRegistry.broadcast(object);
   }
+  
+  @Override
+  public void evict(T value){
+
+  }
+  
 
   private void storeItInMyCacheOrWhatever(T object) {
     

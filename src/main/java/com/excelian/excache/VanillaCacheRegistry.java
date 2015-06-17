@@ -9,17 +9,20 @@ import java.util.function.Predicate;
  */
 public class VanillaCacheRegistry<T extends Object> implements CacheRegistry<T> {
   
-  final ConcurrentHashMap<Predicate<T>, QueryCache<T>> cacheRegistry = new ConcurrentHashMap<>();
+  final ConcurrentHashMap<Predicate<T>, Cache<T>> cacheRegistry = new ConcurrentHashMap<>();
 
   @Override
-  public void registerCache(QueryCache<T> queryCache, Predicate<T> predicate) {
+  public void registerCache(Cache<T> queryCache, Predicate<T> predicate) {
     cacheRegistry.put(predicate, queryCache);
   }
 
   @Override
-  public void broadcast(T object) {
-    for (Map.Entry<Predicate<T>, QueryCache<T>> entry : cacheRegistry.entrySet()) {
-      entry.getKey().test(object);
+  public void broadcast(T value) {
+    for (Map.Entry<Predicate<T>, Cache<T>> entry : cacheRegistry.entrySet()) {
+      final boolean shouldEvict = entry.getKey().test(value);
+      if(shouldEvict){
+        entry.getValue().evict(value);
+      }
     }
   }
 }

@@ -5,4 +5,6 @@ package com.excelian.excache;
  */
 public interface Cache<T> {
   void updateValue(T object);
+
+  void evict(T value);
 }
