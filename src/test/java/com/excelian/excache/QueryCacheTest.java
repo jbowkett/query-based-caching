@@ -32,7 +32,7 @@ public class QueryCacheTest {
     given_AQueryCacheRegistryThatSpecifiesPredicatesForEachCache();
     given_AVanillaCacheOfTypeString();
     given_APredicateForTheQueryCache();
-    given_AQueryCacheThatRegistersWithThePredicate();
+    given_AQueryCacheThatRegistersThePredicateWithTheCacheRegistry();
     when_ACacheReceivesAnUpdatedValueOf("UPDATED VALUE");
     then_EachPredicateWillBeConsultedWithTheValue("UPDATED VALUE");
   }
@@ -42,7 +42,7 @@ public class QueryCacheTest {
     given_AQueryCacheRegistryThatSpecifiesPredicatesForEachCache();
     given_AVanillaCacheOfTypeString();
     given_APredicateForTheQueryCache();
-    given_AQueryCacheThatRegistersWithThePredicate();
+    given_AQueryCacheThatRegistersThePredicateWithTheCacheRegistry();
     given_ThePredicateReturnsTrueToSelect();
     when_ACacheReceivesAnUpdatedValueOf("UPDATED VALUE");
     then_TheQueryCacheWillReceiveAnEvictionMessageForTheValue("UPDATED VALUE");
@@ -52,13 +52,14 @@ public class QueryCacheTest {
     thePredicate = (Predicate<String>)mock(Predicate.class);
   }
 
-  private void given_AQueryCacheThatRegistersWithThePredicate() {
+  private void given_AQueryCacheThatRegistersThePredicateWithTheCacheRegistry() {
     theQueryCache = mock(Cache.class);
     theCacheRegistry.registerCache(theQueryCache, thePredicate);
   }
 
   private void given_AVanillaCacheOfTypeString() {
-    theCache = new VanillaCache<>(theCacheRegistry);
+    theCache = new VanillaCache<>();
+    theCache.registerListener(theCacheRegistry);
   }
 
   private void given_AQueryCacheRegistryThatSpecifiesPredicatesForEachCache() {

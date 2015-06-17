@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 /**
  * Created by jbowkett on 17/06/15.
  */
-public class VanillaCacheRegistry<T extends Object> implements CacheRegistry<T> {
+public class VanillaCacheRegistry<T> implements CacheRegistry<T> {
   
   final ConcurrentHashMap<Predicate<T>, Cache<T>> cacheRegistry = new ConcurrentHashMap<>();
 
