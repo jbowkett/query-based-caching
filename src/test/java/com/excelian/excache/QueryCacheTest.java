@@ -51,7 +51,7 @@ public class QueryCacheTest {
   }
 
   private void given_AQueryCacheThatRegistersWithThePredicate() {
-    theQueryCache = new QueryCache<>(thePredicate);
+    theQueryCache = new QueryCache<>();
     theCacheRegistry.registerCache(theQueryCache, thePredicate);
   }
 
